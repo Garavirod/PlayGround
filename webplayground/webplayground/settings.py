@@ -127,3 +127,12 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'pages:pages'
 LOGOUT_REDIRECT_URL = 'home'
+
+# EMAIL - MTP Server
+if DEBUG:
+    #Los ficheros se mandan en ficehros de pruba almacenados en un lugar
+    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend' 
+    EMAIL_FILE_PATH = os.path.join(BASE_DIR,'sent_emails')
+else:
+    #Here we have to configure a real email for production
+    pass
