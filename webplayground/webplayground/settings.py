@@ -125,7 +125,7 @@ STATIC_URL = '/static/'
 
 # Auth Redirects
 
-LOGIN_REDIRECT_URL = 'pages:pages'
+# LOGIN_REDIRECT_URL = 'pages:pages'
 LOGOUT_REDIRECT_URL = 'home'
 
 # EMAIL - MTP Server
@@ -136,3 +136,7 @@ if DEBUG:
 else:
     #Here we have to configure a real email for production
     pass
+
+# Media Files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media') #Directory
