@@ -31,3 +31,17 @@ class ProfileForm(forms.ModelForm):
             'bio': forms.Textarea(attrs={'class':'form-control mt-3', 'rows':3,'placeholder':'Biography'}),
             'link':forms.URLInput(attrs={'class':'form-control mt-3','placeholder':'Link'}),
         }
+
+class EmailForm(forms.ModelForm):
+    email = forms.EmailField(required=True,help_text="Required Field, max 254 characters, and validing")
+    class Meta:
+        model = User
+        fields = ['email']
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email") #Recover field fro validating
+        #Changed_data is a list which stores all fields which have been edited at the form
+        if 'email' in self.changed_data: #Mail has to had changed            
+            if User.objects.filter(email=email).exists(): #mail musn't exist in BDD
+                raise forms.ValidationError("E-mail already exist") #Error message
+        return email
