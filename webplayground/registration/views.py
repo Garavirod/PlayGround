@@ -1,10 +1,11 @@
-from .forms import UserCreationFormEmail
+from .forms import UserCreationFormEmail, ProfileForm
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from django import forms
-from django.views.generic.base import TemplateView
+from django.views.generic.edit import UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from .models import Profile
 
 # Create your views here.
 class SignupView(CreateView):
@@ -25,5 +26,14 @@ class SignupView(CreateView):
         return form
 
 @method_decorator(login_required, name='dispatch')
-class ProfileUpdate(TemplateView):
+class ProfileUpdate(UpdateView):
+    form_class = ProfileForm
+    success_url = reverse_lazy('profile')
     template_name = 'registration/profile_form.html'
+
+    def get_object(self):
+        #Get the object we're going to edit
+        #We get the object from the user that is at the request
+        #get_or_create retunr a tuple, if there not exist a profile, it creates one
+        profile, create =  Profile.objects.get_or_create(user=self.request.user)
+        return profile

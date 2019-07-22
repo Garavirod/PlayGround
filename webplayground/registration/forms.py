@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Profile
 
 #Extending form
 class UserCreationFormEmail(UserCreationForm):
@@ -19,4 +20,14 @@ class UserCreationFormEmail(UserCreationForm):
             raise forms.ValidationError("E-mail already exist") #Error message
         return email
         
-
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        #Fields we'e going to edit
+        fields = ['avatar','bio','link']
+        widgets = {
+            #This filed allow us clear the input
+            'avatar':forms.ClearableFileInput(attrs={'class':'form-control-file mt-3'}),
+            'bio': forms.Textarea(attrs={'class':'form-control mt-3', 'rows':3,'placeholder':'Biography'}),
+            'link':forms.URLInput(attrs={'class':'form-control mt-3','placeholder':'Link'}),
+        }
