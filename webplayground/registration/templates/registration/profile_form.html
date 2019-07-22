@@ -25,7 +25,10 @@
               {{ form.bio }}
               {{ form.link }}
               <input type='email' value = '{{request.user.email}}' class='form-control mt-3' readonly>
-              <p class='mt-3'><a href="{% url 'profile_email' %}">Click here for edit</a></p>
+              <p class='mt-3'>
+                Edit mail, click -> <a href="{% url 'profile_email' %}">here</a> </br>
+                Edit password, click -> <a href="{% url 'password_change' %}">here</a>
+              </p>
               <input type="submit" class="btn btn-primary btn-block mt-3" value="Actualizar">
             </div>
           </div>
