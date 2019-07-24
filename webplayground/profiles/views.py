@@ -8,6 +8,7 @@ from registration.models import Profile
 class ProfileListView(ListView):
     model = Profile
     template_name = 'profiles/profile_list.html'
+    paginate_by = 3 #Number of register we want show
 
 class ProfileDetailView(DetailView):
     model = Profile
