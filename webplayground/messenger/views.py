@@ -3,7 +3,7 @@ from .models import Thread
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -27,3 +27,10 @@ class ThreadDetail(DetailView):
         if self.request.user not in obj.users.all():
             raise Http404
         return obj #Todso los mensajes que feoman parte de el
+
+def add_message(request,pk):
+    print(request.GET)
+    # Cada vez que se envie un mensaje se devolverá un arespuesta
+    # Si el msg se envia conrrectamente se cambiara a True
+    jason_response = {'created':False}
+    return JsonResponse(jason_response) #Retorna un obj Json
