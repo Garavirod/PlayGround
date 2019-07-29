@@ -59,11 +59,12 @@
               {% endfor %}
             </div>
             <!-- Aquí crearemos el formulario -->
-            <button id ="testBtn">Peticion asincrona de prueba</button>
+            <textarea id="content" class="form-control mb-2" rows="2" placeholder="Write your mesage here"></textarea>
+            <button id ="send" class="btn btn-primary btn-sm btn-block">Peticion asincrona de prueba</button>
             <script>
-              let btn = document.getElementById('testBtn');
-              btn.addEventListener('click',()=>{
-                let content = 'This a test'
+              let send = document.getElementById('send');
+              send.addEventListener('click',()=>{
+                let content = encodeURIComponent(document.getElementById('content').value);
                 const url = "{% url 'messenger:add' thread.pk %}" + "?content="+content
                 fetch(url).then(response => response.json()).then(function(data){
                   alert(data.created);
