@@ -55,3 +55,24 @@ class ThreadTestCase(TestCase):
         self.thread.messages.add(message1,message2,message3)
         # Para que el hilo solo acepte 2 mensajes, se crea una señal en el doc models.py
         self.assertEqual(len(self.thread.messages.all()),2)
+
+    # Retrona el hilo en que dos usuaros formarn parte
+    def test_find_thread_with_custom_manager(self):
+        self.thread.users.add(self.user1,self.user2)
+        #All threads where is the user 1 and the user 2
+        thread = Thread.objects.find(self.user1,self.user2) #Returns an object or None
+        # Encuentra ele hilo en que forman parte el usuario 1 y 2
+        self.assertEqual(self.thread,thread)
+
+    # Find or create
+    def test_find_or_create_thread_with_custom_manager(self):
+        self.thread.users.add(self.user1,self.user2)
+        """El hilo si existe, por lo tanto lo retornar"""
+        thread = Thread.objects.find_or_create(self.user1,self.user2) #Returns an object or None
+        # Encuentra ele hilo en que forman parte el usuario 1 y 2
+        self.assertEqual(self.thread,thread)
+        """No se ha creado hilo para user 3, el método lo tieen que crear"""
+        thread = Thread.objects.find_or_create(self.user1,self.user3) #Returns an object or None
+        # Encuentra ele hilo en que forman parte el usuario 1 y 3
+        # si se ha creado no debe de ser None
+        self.assertIsNotNone(thread)

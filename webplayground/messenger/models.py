@@ -10,6 +10,31 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['created']
+
+
+class ThreadManager(models.Manager):
+    def find(self,user1,user2):
+        """
+            La palabra recervada self hace referencias a las instancias
+            de ese modelo en est caso Thread, ejemplo:
+
+            self <=>  Thread.objects.all
+        """
+        queryset = self.filter(users=user1).filter(users=user2)
+        if len(queryset) > 0:
+            return queryset[0]
+        return None
+    
+    def find_or_create(self,user1,user2):
+        #Buscamos is exite
+        thread = self.find(user1,user2)
+        # De lo contrari lo creamos
+        if thread is None:
+            # Creamos un hilo al cual añadimos al user 1 y 2
+            thread = Thread.objects.create()
+            thread.users.add(user1,user2)
+        return thread
+
 """
     The thread is a place like a point (punto de encuentro)
     where the thread stores the users and the messages which 
@@ -19,6 +44,8 @@ class Message(models.Model):
 class Thread(models.Model):
     users = models.ManyToManyField(User,related_name='threads') #user.threads all thread the user belong
     messages = models.ManyToManyField(Message)
+    # Clase definida arriba, para crear nustros filtros personalizados
+    objects = ThreadManager()
 
 def messages_changed(sender,**kwargs):
     # Instancia que manda la señal, hilo al que intentamos añadir los mensajes
