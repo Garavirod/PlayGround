@@ -11,10 +11,11 @@ from .models import Message, Thread
     run in terminal python manage.py test messenger.tests.TrheadTestCase.test_add_users_to_thread
 
 """
-class TrheadTestCase(TestCase):
+class ThreadTestCase(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user('user1',None,'qwerty1234')
         self.user2 = User.objects.create_user('user2',None,'qwerty1234')
+        self.user3 = User.objects.create_user('user3',None,'qwerty1234')
         self.thread = Thread.objects.create()
 
     def test_add_users_to_thread(self):
@@ -45,3 +46,12 @@ class TrheadTestCase(TestCase):
         for message in self.thread.messages.all():
             print("User: {}, Message : {}".format(message.user,message.conent))
 
+    #Testing an unser that doesn't take place in the thread
+    def test_add_message_from_user_not_in_thread(self):
+        self.thread.users.add(self.user1,self.user2)
+        message1  = Message.objects.create(user=self.user1,conent="I want to buy you somethng")
+        message2  = Message.objects.create(user=self.user2,conent="There's nothing to be done")
+        message3  = Message.objects.create(user=self.user3,conent="I'm a spy")
+        self.thread.messages.add(message1,message2,message3)
+        # Para que el hilo solo acepte 2 mensajes, se crea una señal en el doc models.py
+        self.assertEqual(len(self.thread.messages.all()),2)
