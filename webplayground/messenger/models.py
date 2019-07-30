@@ -9,7 +9,7 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['created']
+        ordering = ['-created']
 
 
 class ThreadManager(models.Manager):
@@ -46,6 +46,11 @@ class Thread(models.Model):
     messages = models.ManyToManyField(Message)
     # Clase definida arriba, para crear nustros filtros personalizados
     objects = ThreadManager()
+    # Campo de actualización
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated']
 
 def messages_changed(sender,**kwargs):
     # Instancia que manda la señal, hilo al que intentamos añadir los mensajes
@@ -75,6 +80,9 @@ def messages_changed(sender,**kwargs):
                 print("Oops! '{}', no forma parte del hilo!".format(msg.user))
                 false_pk_set.add(msg_pk)
     pk_set.difference_update(false_pk_set)
+
+    # Forzamos la actualización
+    instance.save()
     
 # Conecamos la señal con cualquier campo many to many de messages
 m2m_changed.connect(messages_changed,sender=Thread.messages.through)
