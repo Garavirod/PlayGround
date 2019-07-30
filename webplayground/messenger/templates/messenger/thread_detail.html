@@ -60,16 +60,29 @@
             </div>
             <!-- Aquí crearemos el formulario -->
             <textarea id="content" class="form-control mb-2" rows="2" placeholder="Write your mesage here"></textarea>
-            <button id ="send" class="btn btn-primary btn-sm btn-block" disabled>Peticion asincrona de prueba</button>
+            <button id ="send" class="btn btn-primary btn-sm btn-block" disabled>Envíar</button>
             <script>
               let send = document.getElementById('send');
               send.addEventListener('click',()=>{
                 let content = encodeURIComponent(document.getElementById('content').value);
                 if (content.length > 0){
+                  document.getElementById('content').value ='';
+                  send.disabled=true;
                   const url = "{% url 'messenger:add' thread.pk %}" + "?content="+content
                   //Deteteca la sesion activa y la incluye en la petición
                   fetch(url,{'credentials':'include'}).then(response => response.json()).then(function(data){
-                    alert(data.created);
+                     // Si el mensaje se ha creado correctamente...
+                      if (data.created) {
+                        // Aquí iría el código de creación del mensaje dinámicamente
+                        let message = document.createElement('div');
+                        message.classList.add('mine','mb-3');
+                        message.innerHTML='<small>Hace unos segundos</small><br>'+decodeURIComponent(content);
+                        document.getElementById('thread').appendChild(message)
+                        scrollBottomInThread();
+                      } else {
+                        // Si algo ha ido mal podemos debugear en la consola del inspector
+                        console.log("Algo ha fallado y el mensaje no se ha podido añadir.")
+                      }                    
                   })
                 }                
               })
@@ -83,6 +96,13 @@
                   send.disabled =false;
                 
               })
+
+              {% comment %} Forzar el scroll debajo del todo {% endcomment %}
+              function scrollBottomInThread(){
+                let thread = document.getElementById('thread');
+                thread.scrollTop = thread.scrollHeight;
+              }
+              scrollBottomInThread()
 
             </script>
           </div>
