@@ -60,16 +60,30 @@
             </div>
             <!-- Aquí crearemos el formulario -->
             <textarea id="content" class="form-control mb-2" rows="2" placeholder="Write your mesage here"></textarea>
-            <button id ="send" class="btn btn-primary btn-sm btn-block">Peticion asincrona de prueba</button>
+            <button id ="send" class="btn btn-primary btn-sm btn-block" disabled>Peticion asincrona de prueba</button>
             <script>
               let send = document.getElementById('send');
               send.addEventListener('click',()=>{
                 let content = encodeURIComponent(document.getElementById('content').value);
-                const url = "{% url 'messenger:add' thread.pk %}" + "?content="+content
-                fetch(url).then(response => response.json()).then(function(data){
-                  alert(data.created);
-                })
+                if (content.length > 0){
+                  const url = "{% url 'messenger:add' thread.pk %}" + "?content="+content
+                  //Deteteca la sesion activa y la incluye en la petición
+                  fetch(url,{'credentials':'include'}).then(response => response.json()).then(function(data){
+                    alert(data.created);
+                  })
+                }                
               })
+
+              {% comment %} DEsactivacion del botn {% endcomment %}
+              let contenido = document.getElementById('content');
+              contenido.addEventListener('keyup',function(){
+                if(!this.checkValidity() || !this.value)
+                  send.disabled =true;
+                else
+                  send.disabled =false;
+                
+              })
+
             </script>
           </div>
         </div>
