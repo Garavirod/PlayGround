@@ -79,6 +79,9 @@
                         message.innerHTML='<small>Hace unos segundos</small><br>'+decodeURIComponent(content);
                         document.getElementById('thread').appendChild(message)
                         scrollBottomInThread();
+                        if(data.first){
+                          window.location.href = "{% url 'messenger:detail' thread.pk %}";
+                        }
                       } else {
                         // Si algo ha ido mal podemos debugear en la consola del inspector
                         console.log("Algo ha fallado y el mensaje no se ha podido añadir.")

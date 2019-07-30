@@ -4,7 +4,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.http import Http404, JsonResponse
-from django.shortcuts import  get_object_or_404
+from django.shortcuts import  get_object_or_404, redirect
+from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -44,6 +46,17 @@ def add_message(request,pk):
             # añadimos el mensaje al hilo
             thread.messages.add(message)
             jason_response['created']=True
+            if len(thread.messages.all()) is 1:
+                jason_response['first'] = True
     else:
         raise Http404("User is not authenticated")
     return JsonResponse(jason_response) #Retorna un obj Json
+
+# username es al que se le enviará el mensaje
+@login_required #Al ser un método no se acrega el adorno al decorador
+def start_thread(request,username):
+    user = get_object_or_404(User,username=username)
+    # Busca o devuleve un hilo si no existe
+    # El hilo se inicia con el user y el user que tiene activa la sesión.
+    thread = Thread.objects.find_or_create(user, request.user)
+    return redirect(reverse_lazy('messenger:detail',args=[thread.pk]))
